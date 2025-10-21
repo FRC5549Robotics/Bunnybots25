@@ -8,7 +8,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 
 import java.lang.Math;
@@ -27,13 +26,11 @@ public class DriveCommand extends Command {
     // The subsystem the command runs on
     public final 
     DrivetrainSubsystem drivetrain;
-    Elevator m_elevator;
     Limelight m_Limelight;
 
-    public DriveCommand(DrivetrainSubsystem subsystem, CommandXboxController controller, Elevator elevator, Limelight limelight){
+    public DriveCommand(DrivetrainSubsystem subsystem, CommandXboxController controller, Limelight limelight){
         drivetrain = subsystem;
         m_controller = controller;
-        m_elevator = elevator;
         m_Limelight = limelight;
         addRequirements(drivetrain);
     }
@@ -82,10 +79,7 @@ public class DriveCommand extends Command {
           }
   
         }
-              double[] scaledVals = new double[controllerVals.length];
-        for (int i = 0; i < controllerVals.length; i ++) {
-          scaledVals[i] = ((controllerVals[i]*(((48-m_elevator.getLeftElevatorPosition())*0.01)+0.52)));
-        }  
+       
        
 
     }

@@ -1,7 +1,11 @@
 {
     "fileName": "AdvantageKit.json",
     "name": "AdvantageKit",
+<<<<<<< HEAD
+    "version": "4.1.0",
+=======
     "version": "4.1.2",
+>>>>>>> 55cf9f01c9815d6ed8f68c711771e9c79863cd92
     "uuid": "d820cc26-74e3-11ec-90d6-0242ac120003",
     "frcYear": "2025",
     "mavenUrls": [
@@ -12,14 +16,22 @@
         {
             "groupId": "org.littletonrobotics.akit",
             "artifactId": "akit-java",
+<<<<<<< HEAD
+            "version": "4.1.0"
+=======
             "version": "4.1.2"
+>>>>>>> 55cf9f01c9815d6ed8f68c711771e9c79863cd92
         }
     ],
     "jniDependencies": [
         {
             "groupId": "org.littletonrobotics.akit",
             "artifactId": "akit-wpilibio",
+<<<<<<< HEAD
+            "version": "4.1.0",
+=======
             "version": "4.1.2",
+>>>>>>> 55cf9f01c9815d6ed8f68c711771e9c79863cd92
             "skipInvalidPlatforms": false,
             "isJar": false,
             "validPlatforms": [

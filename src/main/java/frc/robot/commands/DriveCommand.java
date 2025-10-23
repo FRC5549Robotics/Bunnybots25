@@ -8,6 +8,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.DrivetrainSubsystem;
+<<<<<<< HEAD
+import frc.robot.subsystems.Elevator;
+=======
+>>>>>>> 55cf9f01c9815d6ed8f68c711771e9c79863cd92
 import frc.robot.subsystems.Limelight;
 
 import java.lang.Math;
@@ -26,11 +30,21 @@ public class DriveCommand extends Command {
     // The subsystem the command runs on
     public final 
     DrivetrainSubsystem drivetrain;
+<<<<<<< HEAD
+    Elevator m_elevator;
+    Limelight m_Limelight;
+
+    public DriveCommand(DrivetrainSubsystem subsystem, CommandXboxController controller, Elevator elevator, Limelight limelight){
+        drivetrain = subsystem;
+        m_controller = controller;
+        m_elevator = elevator;
+=======
     Limelight m_Limelight;
 
     public DriveCommand(DrivetrainSubsystem subsystem, CommandXboxController controller, Limelight limelight){
         drivetrain = subsystem;
         m_controller = controller;
+>>>>>>> 55cf9f01c9815d6ed8f68c711771e9c79863cd92
         m_Limelight = limelight;
         addRequirements(drivetrain);
     }
@@ -79,7 +93,14 @@ public class DriveCommand extends Command {
           }
   
         }
+<<<<<<< HEAD
+              double[] scaledVals = new double[controllerVals.length];
+        for (int i = 0; i < controllerVals.length; i ++) {
+          scaledVals[i] = ((controllerVals[i]*(((48-m_elevator.getLeftElevatorPosition())*0.01)+0.52)));
+        }  
+=======
        
+>>>>>>> 55cf9f01c9815d6ed8f68c711771e9c79863cd92
        
 
     }

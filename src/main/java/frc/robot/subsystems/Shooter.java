@@ -27,13 +27,22 @@ public class Shooter extends SubsystemBase{
     }
 
 
-    public void outtake(){
-        OuttakeMotorLeft.set(Constants.OUTTAKE_MOTOR_LEFT_SPEED);
-        OuttakeMotorRight.set(Constants.OUTTAKE_MOTOR_RIGHT_SPEED);
+    public void shootHigh(){
+        OuttakeMotorLeft.set(Constants.OUTTAKE_MOTOR_LEFT_SPEED_HIGH);
+        OuttakeMotorRight.set(Constants.OUTTAKE_MOTOR_RIGHT_SPEED_HIGH);
         // System.out.println("Intake doesn't work! :(");
-        System.out.println(Constants.OUTTAKE_MOTOR_LEFT_SPEED);
-        System.out.println(Constants.OUTTAKE_MOTOR_RIGHT_SPEED);
+        System.out.println(Constants.OUTTAKE_MOTOR_LEFT_SPEED_HIGH);
+        System.out.println(Constants.OUTTAKE_MOTOR_RIGHT_SPEED_HIGH);
     }
+
+    public void shootLow(){
+        OuttakeMotorLeft.set(Constants.OUTTAKE_MOTOR_LEFT_SPEED_LOW);
+        OuttakeMotorRight.set(Constants.OUTTAKE_MOTOR_RIGHT_SPEED_LOW);
+        // System.out.println("Intake doesn't work! :(");
+        System.out.println(Constants.OUTTAKE_MOTOR_LEFT_SPEED_LOW);
+        System.out.println(Constants.OUTTAKE_MOTOR_RIGHT_SPEED_LOW);
+    }
+
     public void off(){
         OuttakeMotorLeft.set(0);
         OuttakeMotorRight.set(0);

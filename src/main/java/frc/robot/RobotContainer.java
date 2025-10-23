@@ -39,7 +39,9 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shintake;
 import frc.robot.subsystems.DrivetrainSubsystem.direction;
-// import frc.robot.subsystems.Elevator.PivotTarget;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsytems.Belt;
 
 
 /**
@@ -71,11 +73,14 @@ public class RobotContainer {
   JoystickButton AutoAlignRight = new JoystickButton(m_controller.getHID(), 2);
   Trigger[] setpointButtons = {stowedButton, pivotIntakeButton, L1Button, L2Button, L3Button, AlgaeHighButton, AlgaeLowButton};
 
-  //DANCE BUTTONS
+    //DANCE BUTTONS
   JoystickButton slideRight = new JoystickButton(m_controller.getHID(), 2);
   JoystickButton slideLeft = new JoystickButton(m_controller.getHID(), 3);
   JoystickButton slideForward = new JoystickButton(m_controller.getHID(), 4);
   JoystickButton slideBackward = new JoystickButton(m_controller.getHID(), 1);
+
+
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   //region Subsystems
@@ -86,7 +91,8 @@ public class RobotContainer {
   private final Shintake m_shintake = new Shintake();
   // private final Climber m_climber = new Climber();
   private final Limelight m_limelight = new Limelight(m_drive, m_controller);
-
+  private final Intake m_intake = new Intake();
+  private final Shooter m_Shooter = new Shooter();
   // private final Climber m_climber = new Climber();
   //endregion
 

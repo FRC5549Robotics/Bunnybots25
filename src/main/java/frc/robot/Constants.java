@@ -159,36 +159,32 @@ public final class Constants {
     public static final double ELEVATOR_RESET_CURRENT = 3;
     public static final int RESET_ENCODER_BUTTON = 7;
   
-    //Pivot Constants
-    public static final int PIVOT_MOTOR = 32;
-    public static final int PIVOT_JOYSTICK = 5;
-    public static final double PIVOT_DEADBAND = 0.05;
-    public static final double PIVOT_SCALING_FACTOR = 0.3;
-    public static final int PIVOT_ENCODER = 4;
-    public static final double PIVOT_OFFSET = 0.331;
-
-    public static final double PIVOT_INTAKE_SETPOINT = 9.84;
-    public static final double PIVOT_STOWED_SETPOINT = 0;
-    public static final double PIVOT_L1_SETPOINT = 21.735352;
-    public static final double PIVOT_L2_SETPOINT = 24.019531;
-    public static final double PIVOT_L3_SETPOINT = 24.235352; //previously 26.235352
-    public static final double PIVOT_ALGAE_LOW_SETPOINT = 21.556152;
-    public static final double PIVOT_ALGAE_HIGH_SETPOINT = 24.415527;
-    public static final double PIVOT_CLIMB_SETPOINT = 28.8;
-    public static final double PIVOT_MIN_THRESHOLD = 5;
-    public static final double PIVOT_RESET_CURRENT = 4;
-    public static final double PIVOT_PROCESSOR_SETPOINT = 17.29;
+    
 
   //Shintake Constants
-    public static final int INTAKE_MOTOR_LEFT = 33;
-    public static final int INTAKE_MOTOR_RIGHT = 40;
-    public static final int SHOOTER_INTAKE_BUTTON = 6;
-    public static final double INTAKE_OUTTAKE_SPEED = 1;
-    public static final double OUTTAKE_L1_SPEED = 0.4;
-    public static final int SHINTAKE_BUTTON = 0;
+    // public static final int INTAKE_MOTOR_LEFT = 33;
+    // public static final int INTAKE_MOTOR_RIGHT = 40;
+    // public static final int SHOOTER_INTAKE_BUTTON = 6;
+    // public static final double INTAKE_OUTTAKE_SPEED = 1;
+    // public static final double OUTTAKE_L1_SPEED = 0.4;
+    // public static final int SHINTAKE_BUTTON = 0;
     public static final int INTAKE_TRIGGER = 3;
     public static final int OUTTAKE_TRIGGER = 2;//RETURN TO OLD SETTING LATER
 
+    //Intake Constants
+    public static final int INTAKE_MOTOR = 2;
+    public static final int INTAKE_SPEED = 1;
+    public static final int INTAKE = 0;
+
+    //Outtake Constants
+    public static final int OUTTAKE_MOTOR_LEFT = 0;
+    public static final int OUTTAKE_MOTOR_RIGHT = 0;
+    public static final int OUTTAKE_MOTOR_LEFT_SPEED_HIGH = 1;
+    public static final int OUTTAKE_MOTOR_RIGHT_SPEED_HIGH = 1;
+    public static final int OUTTAKE_MOTOR_RIGHT_SPEED_LOW = 1;
+    public static final int OUTTAKE_MOTOR_LEFT_SPEED_LOW = 0;
+    public static final int SHOOT_HIGH = 0;
+    public static final int SHOOT_LOW = 0;
 
   //Climb Constants
     public static final int CLIMBER_MOTOR = 24;
@@ -206,4 +202,10 @@ public final class Constants {
     public static final double Y_SETPOINT_RIGHT_REEF_ALIGNMENT = 0.0;
     public static final double Y_SETPOINT_LEFT_REEF_ALIGNMENT = 0.0;
     public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0.01;
+
+  //Belt Constants
+    public static final int BELT_MOTOR_ID = 0;
+
+  //GroundIntake Constants
+    public static final int PIVOT_MOTOR_ID = 0;
 }

@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.studica.frc.AHRS;
 
 import choreo.trajectory.SwerveSample;
@@ -24,11 +23,8 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-<<<<<<< HEAD
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-import com.pathplanner.lib.PathPlannerTrajectory;
-=======
->>>>>>> 55cf9f01c9815d6ed8f68c711771e9c79863cd92
+//import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+//import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;

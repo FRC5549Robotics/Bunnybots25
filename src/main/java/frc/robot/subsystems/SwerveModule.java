@@ -4,7 +4,9 @@ import java.io.Console;
 
 import org.opencv.core.Mat;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
@@ -26,18 +28,28 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+
 import frc.robot.Constants;
 
 public class SwerveModule extends SubsystemBase {
 
-    private final SparkMax m_turningController;
-    private final SparkMax m_driveController;
-    private SparkMaxConfig m_turningConfig, m_driveConfig;
-  
-    private final RelativeEncoder m_turningEncoder;
-    private final RelativeEncoder m_driveEncoder;
+    private final TalonFX m_turningController;
+    private final TalonFX m_driveController;
+    private TalonFXConfiguration m_turningConfig, m_driveConfig;
 
-    private final CANcoder m_turningCANCoder;
+  
+    // private final RelativeEncoder m_turningEncoder;
+    //private final RelativeEncoder m_driveEncoder;
+
+    // private final CANcoder m_turningCANCoder;
 
     // absolute offset for the CANCoder so that the wheels can be aligned when the
     // robot is turned on
@@ -52,43 +64,63 @@ public class SwerveModule extends SubsystemBase {
      * @param driveMotorChannel   ID for the drive motor.
      * @param turningMotorChannel ID for the turning motor.
      */
-    public SwerveModule(
-                        int driveMotorChannel,
-                        int turningMotorChannel,
-                        int turningCANCoderChannel,
-                        double magnetOffset) {
-        m_driveController = new SparkMax(driveMotorChannel, MotorType.kBrushless);
-        m_turningController = new SparkMax(turningMotorChannel, MotorType.kBrushless);
-        m_driveConfig = new SparkMaxConfig();
-        m_turningConfig = new SparkMaxConfig();
-        m_driveConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40, 40);
-        m_turningConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40, 40);           
-        m_driveConfig.encoder.velocityConversionFactor(Constants.kDriveConversionFactor / 60.0);
-        m_driveConfig.encoder.positionConversionFactor(Constants.kDriveConversionFactor);
-        m_turningConfig.encoder.positionConversionFactor(360.0 / Constants.kTurnPositionConversionFactor);
-        
-        m_driveConfig.closedLoop.pid(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
-        m_driveConfig.closedLoopRampRate(Constants.SLEW_RATE_LIMITER);
-        m_turningConfig.closedLoop.pid(Constants.kTurningP, Constants.kTurningI, Constants.kTurningD);
-        
 
-        m_driveController.configure(m_driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-        m_turningController.configure(m_turningConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    public SwerveModule( int driveMotorChannel, int turningMotorChannel, int turningCANCoderChannel, double magnetOffset, CANBus canbus) {
+        m_driveController = new TalonFX(driveMotorChannel, canbus);
+        m_turningController = new TalonFX(turningMotorChannel, canbus);
+        m_driveConfig = new TalonFXConfiguration();
+        m_turningConfig = new TalonFXConfiguration();
+        m_driveConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+        m_driveConfig.CurrentLimits.withStatorCurrentLimit(40).withSupplyCurrentLimit(40);
+        m_turningConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+        m_turningConfig.CurrentLimits.withStatorCurrentLimit(40).withSupplyCurrentLimit(40);           
+        //m_driveConfig.encoder.velocityConversionFactor(Constants.kDriveConversionFactor / 60.0);
+        var m_driveConfig = m_driveController.getVelocity().getValue();
+        var m_turningConfig = m_turningController.getPosition().getValue();
+        var m_turingDriveConfig = m_driveController.getPosition().getValue();
+
+        //m_driveConfig.encoder.positionConversionFactor(Constants.kDriveConversionFactor);
+        //m_turningConfig.encoder.positionConversionFactor(360.0 / Constants.kTurnPositionConversionFactor);
+        
+        // m_driveConfig.closedLoop.pid(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
+        var pidDrivingConfigs = new Slot0Configs();
+        pidDrivingConfigs.kP = Constants.kDriveP; 
+        pidDrivingConfigs.kI = Constants.kDriveI;
+        pidDrivingConfigs.kD = Constants.kDriveD; 
+        m_turningController.getConfigurator().apply(pidDrivingConfigs);
+
+        //DO WHAT I DID FOR TURNING FOR DRIVE GUYS!!!
+        var pidDriveConfigs = new Slot0Configs();
+        pidDriveConfigs.kD = Constants.SLEW_RATE_LIMITER;
+        m_driveController.getConfigurator().apply(pidDriveConfigs);
+        //m_driveController.closedLoopRampRate(Constants.SLEW_RATE_LIMITER);
+        
+        //m_turningConfig.closedLoop.pid(Constants.kTurningP, Constants.kTurningI, Constants.kTurningD);
+        var pidTurningConfigs = new Slot0Configs();
+        pidTurningConfigs.kP = Constants.kTurningP;
+        pidTurningConfigs.kI = Constants.kTurningI; 
+        pidTurningConfigs.kD = Constants.kTurningD;
+        m_turningController.getConfigurator().apply(pidTurningConfigs);
+
+
+        // m_driveController.configure(m_driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        // m_turningController.configure(m_turningConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
         
         // 401 only sets P of the drive PID
 
-        new WaitCommand(0.5);
-        m_driveEncoder = m_driveController.getEncoder();
-        new WaitCommand(1);
+        //new WaitCommand(0.5);
+        //m_driveEncoder = m_driveController.getConfigurator();
+        //new WaitCommand(1);
 
-        m_turningCANCoder = new CANcoder(turningCANCoderChannel);
+
+        var m_turningCANCoder = new CANcoder(turningCANCoderChannel);
         CANcoderConfiguration config = new CANcoderConfiguration();
         config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
         config.MagnetSensor.MagnetOffset = magnetOffset;
         m_turningCANCoder.setPosition(m_turningCANCoder.getAbsolutePosition().getValueAsDouble());
         m_turningCANCoder.getConfigurator().apply(config);
         // m_turningCANCoder.setPosition(0);        
-        m_turningEncoder = m_turningController.getEncoder();
+        TalonFXConfigurator m_turningEncoder = m_turningController.get; //aAWHAWFHAWDHAWJHFIAHWDNAWFJLKJjAGLk
         // m_CANCoderOffset = Rotation2d.fromDegrees(turningCANCoderOffsetDegrees);
 
         // m_driveEncoder returns RPM by default. Use setVelocityConversionFactor() to

@@ -81,7 +81,7 @@ public class DriveCommand extends Command {
         }
               double[] scaledVals = new double[controllerVals.length];
         for (int i = 0; i < controllerVals.length; i ++) {
-          scaledVals[i] = ((controllerVals[i]*(((48-m_elevator.getLeftElevatorPosition())*0.01)+0.52)));
+          // scaledVals[i] = ((controllerVals[i]*(((48-m_elevator.getLeftElevatorPosition())*0.01)+0.52)));
         }  
        
 

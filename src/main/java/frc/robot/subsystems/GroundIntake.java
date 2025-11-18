@@ -55,16 +55,15 @@ public class GroundIntake extends SubsystemBase{
         PivotConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         PivotConfigurator.apply(PivotConfigs);
 
-        ElevatorController = new ProfiledPIDController(0.03, 0.0, 0.0, new Constraints(-1, -0.1));
         
     }
 
-    public void pivotDown(double speed){
-        pivotMotor.set(speed);
+    public void pivotDown(){
+        pivotMotor.set(0.5);
     }
 
-    public void pivotUp(double speed){
-        pivotMotor.set(-speed);
+    public void pivotUp(){
+        pivotMotor.set(-0.5);
     }
     public void IntakeOn(){
         IntakeMotor.set(Constants.INTAKE_SPEED);
@@ -72,6 +71,7 @@ public class GroundIntake extends SubsystemBase{
     
     public void off (){
         pivotMotor.set(0);
+        IntakeMotor.set(0);
     }
 
     public void periodic(){

@@ -50,7 +50,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Constants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
           Constants.FRONT_LEFT_MODULE_STEER_MOTOR,
           Constants.FRONT_LEFT_MODULE_STEER_ENCODER,
-          Constants.FRONT_LEFT_MAGNET_OFFSET
+          Constants.FRONT_LEFT_MAGNET_OFFSET,
+          Constants.kDriveCANBus
           );
 
   private final SwerveModule m_frontRight =
@@ -58,7 +59,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Constants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
           Constants.FRONT_RIGHT_MODULE_STEER_MOTOR,
           Constants.FRONT_RIGHT_MODULE_STEER_ENCODER,
-          Constants.FRONT_RIGHT_MAGNET_OFFSET
+          Constants.FRONT_RIGHT_MAGNET_OFFSET,
+          Constants.kDriveCANBus
           );
 
   private final SwerveModule m_rearLeft =
@@ -66,7 +68,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Constants.BACK_LEFT_MODULE_DRIVE_MOTOR,
         Constants.BACK_LEFT_MODULE_STEER_MOTOR,
         Constants.BACK_LEFT_MODULE_STEER_ENCODER,
-        Constants.BACK_LEFT_MAGNET_OFFSET
+        Constants.BACK_LEFT_MAGNET_OFFSET,
+        Constants.kDriveCANBus
           );
 
   private final SwerveModule m_rearRight =
@@ -74,7 +77,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Constants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
         Constants.BACK_RIGHT_MODULE_STEER_MOTOR,
         Constants.BACK_RIGHT_MODULE_STEER_ENCODER,
-        Constants.BACK_RIGHT_MAGNET_OFFSET
+        Constants.BACK_RIGHT_MAGNET_OFFSET,
+        Constants.kDriveCANBus
           );
 
   private SwerveModule[] modules = {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
@@ -114,7 +118,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     for (int i = 0; i < 4; i++) {
       modules[i].resetDistance();
-      modules[i].syncTurningEncoders();
+      // modules[i].syncTurningEncoders();
       
       new WaitCommand(1);
       // System.out.println("Module" + i + "is synced to" + modules[i].getTurnCANcoderAngle() + "  " + modules[i].getTurnEncoder().getPosition());
@@ -174,7 +178,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     for (int i = 0; i < 4; i++) {
       modules[i].resetDistance();
-      modules[i].syncTurningEncoders();
+      // modules[i].syncTurningEncoders();
     }
   }
   
@@ -188,15 +192,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Left CANCoder", m_rearLeft.getTurnCANcoder().getAbsolutePosition().getValueAsDouble()*360);
     SmartDashboard.putNumber("Back Right CANCoder", m_rearRight.getTurnCANcoder().getAbsolutePosition().getValueAsDouble()*360);
 
-    SmartDashboard.putNumber("Front Left Neo Encoder", m_frontLeft.getTurnEncoder().getPosition());
-    SmartDashboard.putNumber("Front Right Neo Encoder", m_frontRight.getTurnEncoder().getPosition());
-    SmartDashboard.putNumber("Back Left Neo Encoder", m_rearLeft.getTurnEncoder().getPosition());
-    SmartDashboard.putNumber("Back Right Neo Encoder", m_rearRight.getTurnEncoder().getPosition());
+    // SmartDashboard.putNumber("Front Left Neo Encoder", m_frontLeft.getTurnMotor().getPosition());
+    // SmartDashboard.putNumber("Front Right Neo Encoder", m_frontRight.getTurnEncoder().getPosition());
+    // SmartDashboard.putNumber("Back Left Neo Encoder", m_rearLeft.getTurnEncoder().getPosition());
+    // SmartDashboard.putNumber("Back Right Neo Encoder", m_rearRight.getTurnEncoder().getPosition());
+    SmartDashboard.putNumber("Front Left Talon Pos (Rot)", m_frontLeft.getTurnMotor().getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Front Right Talon Pos (Rot)", m_frontRight.getTurnMotor().getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Back Left Talon Pos (Rot)", m_rearLeft.getTurnMotor().getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Back Right Talon Pos (Rot)", m_rearRight.getTurnMotor().getPosition().getValueAsDouble());
     
-    SmartDashboard.putNumber("Front Left Neo Velocity", m_frontLeft.getDriveEncoder().getVelocity());
-    SmartDashboard.putNumber("Front Right Neo Velocity", m_frontRight.getDriveEncoder().getVelocity());
-    SmartDashboard.putNumber("Back Left Neo Velocity", m_rearLeft.getDriveEncoder().getVelocity());
-    SmartDashboard.putNumber("Back Right Neo Velocity", m_rearRight.getDriveEncoder().getVelocity());
+    // SmartDashboard.putNumber("Front Left Neo Velocity", m_frontLeft.getDriveEncoder().getVelocity());
+    // SmartDashboard.putNumber("Front Right Neo Velocity", m_frontRight.getDriveEncoder().getVelocity());
+    // SmartDashboard.putNumber("Back Left Neo Velocity", m_rearLeft.getDriveEncoder().getVelocity());
+    // SmartDashboard.putNumber("Back Right Neo Velocity", m_rearRight.getDriveEncoder().getVelocity());
+    SmartDashboard.putNumber("Front Left Talon Vel (RPS)", m_frontLeft.getDriveMotor().getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Front Right Talon Vel (RPS)", m_frontRight.getDriveMotor().getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Back Left Talon Vel (RPS)", m_rearLeft.getDriveMotor().getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Back Right Talon Vel (RPS)", m_rearRight.getDriveMotor().getVelocity().getValueAsDouble());
 
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     

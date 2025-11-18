@@ -27,7 +27,7 @@ public class Belt extends SubsystemBase {
     }
 
     /** Stops the belt motor */
-    public void stopBelt() {
+    public void off() {
         BeltMotor.set(0.0);
     }
 }

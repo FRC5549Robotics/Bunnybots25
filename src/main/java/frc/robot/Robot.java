@@ -17,6 +17,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.opencv.core.Mat;
 import org.littletonrobotics.urcl.*;
+// import edu.wpi.first.util.datalog.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
 // import org.littletonrobotics.urcl.URCL;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -42,20 +44,20 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
-// public class Robot extends TimedRobot {
-//   private Command m_autonomousCommand;
+public class Robot extends TimedRobot {
+  private Command m_autonomousCommand;
 
 //   private final RobotContainer m_robotContainer;
 /**
   //  * This function is run when the robot is first started up and should be used for any
   //  * initialization code.
   //  */
-public class Robot extends LoggedRobot {
-  private final RobotContainer m_robotContainer;
-  CameraServer cameraServer;
-  UsbCamera cam;
-  Command m_autonomousCommand;
-  NetworkTableEntry cameraNet;
+// public class Robot extends LoggedRobot {
+//   private final RobotContainer m_robotContainer;
+//   CameraServer cameraServer;
+//   UsbCamera cam;
+//   Command m_autonomousCommand;
+//   NetworkTableEntry cameraNet;
   public Robot() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -117,7 +119,7 @@ public class Robot extends LoggedRobot {
 
     // Start AdvantageKit logger
     // Logger.start();  // Start logging! No more data receivers, replay sources, or metadata values may be added.
-    cam = CameraServer.startAutomaticCapture(0);
+    // cam = CameraServer.startAutomaticCapture(0);
 
     // CvSink sink  = CameraServer.getVideo();
     // Mat mat = sink.getDirectMat();
@@ -126,9 +128,9 @@ public class Robot extends LoggedRobot {
 
 
 //     cameraNet = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
-//     m_robotContainer = new RobotContainer();
+    // m_robotContainer = new RobotContainer();
  
-  }
+  
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
@@ -159,13 +161,13 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    System.out.println("Autonomous period started");
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-      System.out.println("Autonomous command initialized");
-    }
+  //   // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+  //   System.out.println("Autonomous period started");
+  //   // schedule the autonomous command (example)
+  //   if (m_autonomousCommand != null) {
+  //     m_autonomousCommand.schedule();
+  //     System.out.println("Autonomous command initialized");
+  //   }
 
   }
 
@@ -182,8 +184,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    DataLogManager.start();
-    DriverStation.startDataLog(DataLogManager.getLog(), false);
+    // DataLogManager.start();
+    // DriverStation.startDataLog(DataLogManager.getLog(), false);
 
   }
 
@@ -199,14 +201,15 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().cancelAll();
   }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+  // /** This function is called periodically during test mode. */
+  // @Override
+  // public void testPeriodic() {}
 
-  /** This function is called once when the robot is first started up. */
-  @Override
-  public void simulationInit() {}
+  // /** This function is called once when the robot is first started up. */
+  // @Override
+  // public void simulationInit() {}
 
-  /** This function is called periodically whilst in simulation. */
-  @Override
-  public void simulationPeriodic() {}
+  // /** This function is called periodically whilst in simulation. */
+  // @Override
+  // public void simulationPeriodic() {}
+}

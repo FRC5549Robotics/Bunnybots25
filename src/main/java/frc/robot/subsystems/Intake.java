@@ -26,9 +26,14 @@ public class Intake extends SubsystemBase{
         IntakeMotor.set(Constants.INTAKE_SPEED);
         // System.out.println("Intake doesn't work! :(");
     }
+
+    public void reverse(){
+        IntakeMotor.set(-Constants.INTAKE_SPEED);
+    }
     public void off(){
         IntakeMotor.set(0);
         System.out.println("Intake Off");
     }
+
     
 };

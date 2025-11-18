@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.CANBus;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -19,6 +21,10 @@ import edu.wpi.first.wpilibj.RobotBase;
 public final class Constants {
   public static final int DRIVE_CONTROLLER = 0;
   public static final int OPERATOR_CONTROLLER = 1;
+
+  // "rio" is the default bus. Use "CANivoreName" if you have a CANivore.
+  public static final CANBus kDriveCANBus = new CANBus("lil clanker");
+
 
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 13; 
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 5;
@@ -177,8 +183,8 @@ public final class Constants {
     public static final int INTAKE = 0;
 
     //Outtake Constants
-    public static final int OUTTAKE_MOTOR_LEFT = 0;
-    public static final int OUTTAKE_MOTOR_RIGHT = 0;
+    public static final int OUTTAKE_MOTOR_LEFT = 13;
+    public static final int OUTTAKE_MOTOR_RIGHT = 14;
     public static final int OUTTAKE_MOTOR_LEFT_SPEED_HIGH = 1;
     public static final int OUTTAKE_MOTOR_RIGHT_SPEED_HIGH = 1;
     public static final int OUTTAKE_MOTOR_RIGHT_SPEED_LOW = 1;
@@ -186,13 +192,6 @@ public final class Constants {
     public static final int SHOOT_HIGH = 0;
     public static final int SHOOT_LOW = 0;
 
-  //Climb Constants
-    public static final int CLIMBER_MOTOR = 24;
-    public static final int CLIMBER_JOYSTICK = 1;
-    public static final double CLIMBER_DEADBAND = 0.05;
-    public static final double CLIMBER_SCALING_FACTOR = 0.15;
-    public static final int CLIMB_BUTTON = 7;
-    public static final int CLIMB_UNWIND = 8;
 
   //Limelight Constants
     public static final double ROT_SETPOINT_REEF_ALIGNMENT = 0.0;
@@ -207,5 +206,8 @@ public final class Constants {
     public static final int BELT_MOTOR_ID = 0;
 
   //GroundIntake Constants
-    public static final int PIVOT_MOTOR_ID = 0;
+    public static final int PIVOT_MOTOR_ID = 16;
+
+    public static final double GROUND_PIVOT_SPEED = 0.5;
+
 }

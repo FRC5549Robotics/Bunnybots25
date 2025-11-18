@@ -36,6 +36,9 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 
 import frc.robot.Constants;
 
@@ -44,12 +47,14 @@ public class SwerveModule extends SubsystemBase {
     private final TalonFX m_turningController;
     private final TalonFX m_driveController;
     private TalonFXConfiguration m_turningConfig, m_driveConfig;
+    private final CANcoder m_turningCANcoder;
+    private final CANcoder m_driveCANcoder;
+    
 
   
     // private final RelativeEncoder m_turningEncoder;
     //private final RelativeEncoder m_driveEncoder;
 
-    // private final CANcoder m_turningCANCoder;
 
     // absolute offset for the CANCoder so that the wheels can be aligned when the
     // robot is turned on
@@ -66,36 +71,50 @@ public class SwerveModule extends SubsystemBase {
      */
 
     public SwerveModule( int driveMotorChannel, int turningMotorChannel, int turningCANCoderChannel, double magnetOffset, CANBus canbus) {
+        //Instantiate SwerveModule components
         m_driveController = new TalonFX(driveMotorChannel, canbus);
         m_turningController = new TalonFX(turningMotorChannel, canbus);
+        m_turningCANcoder = new CANcoder(turningCANCoderChannel, canbus);
+        m_driveCANcoder = new CANcoder(driveMotorChannel, canbus);
+
+        //Configure SwerveModule components
         m_driveConfig = new TalonFXConfiguration();
         m_turningConfig = new TalonFXConfiguration();
+
+        // --- Drive Config ---
         m_driveConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
         m_driveConfig.CurrentLimits.withStatorCurrentLimit(40).withSupplyCurrentLimit(40);
+
+        // --- Turning Config ---
         m_turningConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-        m_turningConfig.CurrentLimits.withStatorCurrentLimit(40).withSupplyCurrentLimit(40);           
+        m_turningConfig.CurrentLimits.withStatorCurrentLimit(40).withSupplyCurrentLimit(40);
+
+        // --- !! APPLY CONFIGS !! ---
+        m_driveController.getConfigurator().apply(m_driveConfig);
+        m_turningController.getConfigurator().apply(m_turningConfig);
+        
         //m_driveConfig.encoder.velocityConversionFactor(Constants.kDriveConversionFactor / 60.0);
-        var m_driveConfig = m_driveController.getVelocity().getValue();
-        var m_turningConfig = m_turningController.getPosition().getValue();
-        var m_turingDriveConfig = m_driveController.getPosition().getValue();
+        // var m_driveConfig = m_driveController.getVelocity().getValue();
+        // var m_turningConfig = m_turningController.getPosition().getValue();
+        // var m_turingDriveConfig = m_driveController.getPosition().getValue();
 
         //m_driveConfig.encoder.positionConversionFactor(Constants.kDriveConversionFactor);
         //m_turningConfig.encoder.positionConversionFactor(360.0 / Constants.kTurnPositionConversionFactor);
         
         // m_driveConfig.closedLoop.pid(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
-        var pidDrivingConfigs = new Slot0Configs();
-        pidDrivingConfigs.kP = Constants.kDriveP; 
-        pidDrivingConfigs.kI = Constants.kDriveI;
-        pidDrivingConfigs.kD = Constants.kDriveD; 
-        m_turningController.getConfigurator().apply(pidDrivingConfigs);
+        
+        // --- Drive PID ---
+        var pidDriveConfigs = new Slot0Configs();
+        pidDriveConfigs.kP = Constants.kDriveP; 
+        pidDriveConfigs.kI = Constants.kDriveI;
+        pidDriveConfigs.kD = Constants.kDriveD; 
+        m_driveController.getConfigurator().apply(pidDriveConfigs);
 
         //DO WHAT I DID FOR TURNING FOR DRIVE GUYS!!!
-        var pidDriveConfigs = new Slot0Configs();
-        pidDriveConfigs.kD = Constants.SLEW_RATE_LIMITER;
-        m_driveController.getConfigurator().apply(pidDriveConfigs);
         //m_driveController.closedLoopRampRate(Constants.SLEW_RATE_LIMITER);
         
         //m_turningConfig.closedLoop.pid(Constants.kTurningP, Constants.kTurningI, Constants.kTurningD);
+        // --- Turning PID ---
         var pidTurningConfigs = new Slot0Configs();
         pidTurningConfigs.kP = Constants.kTurningP;
         pidTurningConfigs.kI = Constants.kTurningI; 
@@ -112,15 +131,22 @@ public class SwerveModule extends SubsystemBase {
         //m_driveEncoder = m_driveController.getConfigurator();
         //new WaitCommand(1);
 
-
-        var m_turningCANCoder = new CANcoder(turningCANCoderChannel);
+        // --- CANcoder Config ---
         CANcoderConfiguration config = new CANcoderConfiguration();
-        config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
         config.MagnetSensor.MagnetOffset = magnetOffset;
-        m_turningCANCoder.setPosition(m_turningCANCoder.getAbsolutePosition().getValueAsDouble());
-        m_turningCANCoder.getConfigurator().apply(config);
+        m_turningCANcoder.getConfigurator().apply(config);
+
+        //Connect CaNCoder to Turning Controller
+        // Wait for CANcoder to get a valid signal
+        Timer.delay(0.5); 
+        // Get absolute position (in rotations 0.0-1.0)
+        double absolutePosition = m_turningCANcoder.getAbsolutePosition().getValueAsDouble();
+        // Tell the TalonFX its position (in rotations)
+        m_turningController.setPosition(absolutePosition);
+
+        // m_turningencoder.setPosition(m_turningCANcoder.getAbsolutePosition().getValueAsDouble());
         // m_turningCANCoder.setPosition(0);        
-        TalonFXConfigurator m_turningEncoder = m_turningController.get; //aAWHAWFHAWDHAWJHFIAHWDNAWFJLKJjAGLk
+        // TalonFXConfigurator m_turningEncoder = m_turningController.getConfigurator(); //aAWHAWFHAWDHAWJHFIAHWDNAWFJLKJjAGLk
         // m_CANCoderOffset = Rotation2d.fromDegrees(turningCANCoderOffsetDegrees);
 
         // m_driveEncoder returns RPM by default. Use setVelocityConversionFactor() to
@@ -138,38 +164,51 @@ public class SwerveModule extends SubsystemBase {
         // double m1 = m_turningEncoder.getPosition() % 360.0;
         // double m2 = (m1 < 0) ? m1 + 360 : m1;
 
-        double m2 = ((m_turningEncoder.getPosition()) % 360 + 360) % 360;
-        String x;
-        String y;
-        x= null;
-        y="3";
-        String a = x != null ? y : x;
+        // 1. Get Drive Velocity
+        // getVelocity() returns Rotations Per Second (RPS) of the motor shaft
+        double driveRPS = m_driveController.getVelocity().getValueAsDouble();
+        // You MUST convert RPS to meters per second using your gear ratio and wheel size
+        // You'll need to re-calculate and define kDriveConversionFactor in your Constants file
+        double driveMetersPerSecond = driveRPS * Constants.kDriveConversionFactor;
 
-        return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(m2 * Math.PI / 180));
+        // 2. Get Turning Angle
+        // getAbsolutePosition() returns rotations (0.0 to 1.0)
+        double turningRotations = m_turningCANcoder.getAbsolutePosition().getValueAsDouble();
+        // Convert rotations to degrees for the Rotation2d object
+        double turningDegrees = turningRotations * 360.0;
+
+        // The line you mentioned (m2) is no longer needed.
+        // String x;
+        // String y;
+        // x = null;
+        // y = "3";
+        // String a = x != null ? y : x; // This code doesn't do anything, you can remove it.
+        return new SwerveModuleState(driveMetersPerSecond, Rotation2d.fromDegrees(turningDegrees));
     }
+    
 
-    public SparkMax getTurnMotor() {
+    public TalonFX getTurnMotor() {
         return m_turningController;
     }
 
-    public SparkMax getDriveMotor() {
+    public TalonFX getDriveMotor() {
         return m_driveController;
     }
 
-    public RelativeEncoder getTurnEncoder() {
-        return m_turningEncoder;
-    }
+    // public CANcoder getTurnEncoder() {
+    //     return m_turningEncoder;
+    // }
 
-    public RelativeEncoder getDriveEncoder() {
-        return m_driveEncoder;
+    public CANcoder getDriveCANcoder() {
+        return m_driveCANcoder;
     }
 
     public CANcoder getTurnCANcoder() {
-        return m_turningCANCoder;
+        return m_turningCANcoder;
     }
 
     public double getTurnCANcoderAngle() {
-        return m_turningCANCoder.getAbsolutePosition().getValueAsDouble()*360;
+        return m_turningCANcoder.getAbsolutePosition().getValueAsDouble()*360;
     }
 
     public Rotation2d adjustedAngle = new Rotation2d();
@@ -181,8 +220,12 @@ public class SwerveModule extends SubsystemBase {
      *              degrees).
      */
     public void setDesiredState(SwerveModuleState state) {
+        // !! FIX: Use getAbsolutePosition() !!
+        // getPosition() is cumulative, getAbsolutePosition() is 0.0-1.0
+        double curRotations = m_turningCANcoder.getAbsolutePosition().getValueAsDouble();
+        Rotation2d curAngle = Rotation2d.fromDegrees(curRotations * 360.0);
 
-        Rotation2d curAngle = Rotation2d.fromDegrees(m_turningEncoder.getPosition());
+        // Rotation2d curAngle = Rotation2d.fromDegrees(m_turningCANcoder.getPosition().getValueAsDouble());
 
         double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
 
@@ -195,25 +238,31 @@ public class SwerveModule extends SubsystemBase {
         }
 
         adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
+        double targetRotations = adjustedAngle.getRotations();
+        PositionVoltage positionRequest = new PositionVoltage(targetRotations);
+        
 
-        if((driveOutput == 0 && Math.abs(getTurnEncoder().getPosition() - adjustedAngle.getDegrees()) > 2) || Math.abs(driveOutput) > 0){
-            m_turningController.getClosedLoopController().setReference(
-                adjustedAngle.getDegrees(),
-                ControlType.kPosition
-            );            
+        if((driveOutput == 0 && Math.abs(getTurnCANcoder().getPosition().getValueAsDouble() - adjustedAngle.getDegrees()) > 2) || Math.abs(driveOutput) > 0){
+            // m_turningController.getClosedLoopController().setReference(
+            //     adjustedAngle.getDegrees(),
+            //     ControlType.kPosition
+            // );     
+            m_turningController.setControl(positionRequest);       
         }
         else{
             m_turningController.set(0);
         }
 
         SmartDashboard.putNumber("Commanded Velocity", driveOutput);
-        SmartDashboard.putNumber("Module Speeds", m_driveEncoder.getVelocity());
+        SmartDashboard.putNumber("Module Speeds", m_driveCANcoder.getVelocity().getValueAsDouble());
 
-        m_driveController.getClosedLoopController().setReference(driveOutput/Constants.kMaxSpeedMetersPerSecond, ControlType.kDutyCycle, ClosedLoopSlot.kSlot0, 0.0);
+        // m_driveController.getClosedLoopController().setReference(driveOutput/Constants.kMaxSpeedMetersPerSecond, ControlType.kDutyCycle, ClosedLoopSlot.kSlot0, 0.0);
+        DutyCycleOut driveRequest = new DutyCycleOut(driveOutput / Constants.kMaxSpeedMetersPerSecond);
+        m_driveController.setControl(driveRequest);
     }
 
     public void setOpenLoopState(SwerveModuleState state) {
-        Rotation2d curAngle = Rotation2d.fromDegrees(m_turningEncoder.getPosition());
+        Rotation2d curAngle = Rotation2d.fromDegrees(m_turningCANcoder.getPosition().getValueAsDouble());
 
         double delta = deltaAdjustedAngle(state.angle.getDegrees(), curAngle.getDegrees());
 
@@ -225,16 +274,17 @@ public class SwerveModule extends SubsystemBase {
             delta -= Math.signum(delta) * 180;
         }
 
-        adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
+        // --- Turning Control ---
+        PositionVoltage turnRequest = new PositionVoltage(adjustedAngle.getRotations());
+        m_turningController.setControl(turnRequest);
 
-        m_turningController.getClosedLoopController().setReference(
-            adjustedAngle.getDegrees(),
-            ControlType.kPosition
-        );        
+        // --- Drive Control ---
+        VoltageOut driveRequest = new VoltageOut(Constants.kDriveFF * driveOutput);
+        m_driveController.setControl(driveRequest);
 
         SmartDashboard.putNumber("Commanded Velocity", driveOutput);
 
-        m_driveController.setVoltage(Constants.kDriveFF * driveOutput);
+        // m_driveController.setVoltage(Constants.kDriveFF * driveOutput);
     }
 
     //calculate the angle motor setpoint based on the desired angle and the current angle measurement
@@ -245,25 +295,25 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public double getDriveDistanceMeters() {
-        return m_driveEncoder.getPosition();
+        return m_driveCANcoder.getPosition().getValueAsDouble();
     }
 
     public void resetDistance() {
-        m_driveEncoder.setPosition(0.0);
+        m_driveCANcoder.setPosition(0.0);
     }
 
-    public void syncTurningEncoders() {
-        m_turningEncoder.setPosition(m_turningCANCoder.getAbsolutePosition().getValueAsDouble()*360);
-    }
+    // public void syncTurningEncoders() {
+    //     m_turningEncoder.setPosition(m_turningCANCoder.getAbsolutePosition().getValueAsDouble()*360);
+    // }
 
     public void switchToCoast() {
-        m_driveConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40, 40);
-        m_turningConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40, 40);
+        m_driveController.setNeutralMode(NeutralModeValue.Coast);
+        m_turningController.setNeutralMode(NeutralModeValue.Coast);
     }
-
+    
     public void switchToBrake() {
-        m_driveConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40, 40);
-        m_turningConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40, 40);
+        m_driveController.setNeutralMode(NeutralModeValue.Brake);
+        m_turningController.setNeutralMode(NeutralModeValue.Brake);
     }
 
     /** Zeros all the SwerveModule encoders. */

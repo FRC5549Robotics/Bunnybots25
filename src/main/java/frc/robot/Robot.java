@@ -4,38 +4,11 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Value;
-
-import java.security.Key;
-import java.util.Optional;
-
-import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.opencv.core.Mat;
-import org.littletonrobotics.urcl.*;
-// import edu.wpi.first.util.datalog.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
 
-// import org.littletonrobotics.urcl.URCL;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.*;
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
-
-//import choreo.Choreo;
-//import choreo.trajectory.SwerveSample;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -44,10 +17,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
-public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+public class Robot extends LoggedRobot {
+  RobotContainer m_robotContainer;
+  CameraServer cameraServer;
+  UsbCamera cam;
+  Command m_autonomousCommand;
+  NetworkTableEntry cameraNet;
 
-//   private final RobotContainer m_robotContainer;
+
+  // private final RobotContainer m_robotContainer;
 /**
   //  * This function is run when the robot is first started up and should be used for any
   //  * initialization code.
@@ -128,7 +106,7 @@ public class Robot extends TimedRobot {
 
 
 //     cameraNet = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
-    // m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer();
  
   
 
@@ -186,7 +164,7 @@ public class Robot extends TimedRobot {
     }
     // DataLogManager.start();
     // DriverStation.startDataLog(DataLogManager.getLog(), false);
-
+    // m_belt.runBelt();
   }
 
   /** This function is called periodically during operator control. */

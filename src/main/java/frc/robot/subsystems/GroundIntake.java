@@ -43,7 +43,7 @@ public class GroundIntake extends SubsystemBase{
         PivotConfigs = new TalonFXConfiguration();
         PivotConfigurator = pivotMotor.getConfigurator();
 
-        IntakeMotor = new SparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
+        IntakeMotor = new SparkMax(Constants.GROUND_INTAKE_ID, MotorType.kBrushless);
         IntakeConfig = new SparkMaxConfig();
         IntakeConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40,40);
         IntakeMotor.configure(IntakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);

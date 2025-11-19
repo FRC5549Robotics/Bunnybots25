@@ -4,53 +4,26 @@
 
 package frc.robot;
 
-import java.time.Instant;
-import java.util.Optional;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
-// import choreo.Choreo;
-// import choreo.auto.AutoFactory;
-import choreo.trajectory.SwerveSample;
-import choreo.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.DriveAuton;
 import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Limelight;
-//import frc.robot.subsystems.Pivot;
-//import frc.robot.subsystems.Shintake;
-import frc.robot.subsystems.DrivetrainSubsystem.direction;
-// import frc.robot.subsystems.Elevator.PivotTarget;
-//import frc.robot.commands.PivotAnalog;
-//import frc.robot.commands.SnapBack;
-//import frc.robot.subsystems.Pivot.PivotTarget;
-//import frc.robot.subsystems.Shintake;
-import frc.robot.subsystems.DrivetrainSubsystem.direction;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Belt;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.GroundIntake;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Shooter;
 
 
 /**
@@ -65,12 +38,13 @@ public class RobotContainer {
 
   JoystickButton resetNavXButton = new JoystickButton(m_controller.getHID(), Constants.RESET_NAVX_BUTTON);
 
-  JoystickButton shootHighButton = new JoystickButton(m_controller2.getHID(), 6);
-  JoystickButton shootLowButton = new JoystickButton(m_controller2.getHID(), 5);
-  JoystickButton intakeButton = new JoystickButton(m_controller2.getHID(), 11);
-  JoystickButton groundIntakeButton = new JoystickButton(m_controller2.getHID(), 12);
-  JoystickButton reverseIntakeButton = new JoystickButton(m_controller2.getHID(), 7);
-  JoystickButton groundIntakeUpButton = new JoystickButton(m_controller2.getHID(), 1);
+  // JoystickButton shootHighButton = new JoystickButton(m_controller2.getHID(), 6);
+  // JoystickButton shootLowButton = new JoystickButton(m_controller2.getHID(), 5);
+  JoystickButton intakeButton = new JoystickButton(m_controller2.getHID(), 2);
+  JoystickButton groundIntakeButton = new JoystickButton(m_controller2.getHID(), 1);
+  JoystickButton reverseIntakeButton = new JoystickButton(m_controller2.getHID(), 3);
+  JoystickButton groundIntakeUpButton = new JoystickButton(m_controller2.getHID(), 4);
+  JoystickButton shootButton = new JoystickButton(m_controller2.getHID(), 8);
 
 
 
@@ -79,17 +53,11 @@ public class RobotContainer {
   //region Subsystems
   private final AHRS m_ahrs = new AHRS(NavXComType.kMXP_SPI);
   public final DrivetrainSubsystem m_drive = new DrivetrainSubsystem(m_ahrs);
-  //private final Elevator m_elevator = new Elevator(m_controller2, setpointButtons);
-
-  //private final Shintake m_shintake = new Shintake();
-  // private final Climber m_climber = new Climber();
   private final Limelight m_limelight = new Limelight(m_drive, m_controller);
   private final Intake m_intake = new Intake();
   private final Shooter m_Shooter = new Shooter();
   private final Belt m_Belt = new Belt();
   private final GroundIntake m_pivot = new GroundIntake(m_controller2);
-
-  // private final Climber m_climber = new Climber();
   //endregion
 
   //AUTOCHOOSER SET UP
@@ -118,22 +86,23 @@ public class RobotContainer {
    */
   private void configureBindings() {
     //region Drivetrain
-     // m_controller.axisGreaterThan(0, 0.07).or(m_controller.axisGreaterThan(1, 0.07)).or(m_controller.axisGreaterThan(4, 0.07))
-     // .or(m_controller.axisLessThan(0, -0.07)).or(m_controller.axisLessThan(1, -0.07)).or(m_controller.axisLessThan(4, -0.07))
-     // .or(AutoAlignLeft).or(AutoAlignRight);
-      //.onTrue(new DriveCommand(m_drive, m_controller, m_elevator, m_limelight));
+     m_controller.axisGreaterThan(0, 0.07).or(m_controller.axisGreaterThan(1, 0.07)).or(m_controller.axisGreaterThan(4, 0.07))
+     .or(m_controller.axisLessThan(0, -0.07)).or(m_controller.axisLessThan(1, -0.07)).or(m_controller.axisLessThan(4, -0.07))
+      .onTrue(new DriveCommand(m_drive, m_controller, m_limelight));
       resetNavXButton.onTrue(new InstantCommand(m_drive::zeroGyroscope));
     //endregion
+
+    
     
     //region Shooter, Intake, and Belt
-    shootHighButton.onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootHigh), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
-  
-    m_controller2.axisGreaterThan(Constants.SHOOT_HIGH, 0.7)
-    .onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootHigh), new InstantCommand(m_Belt::runBelt)))
+    //shootHighButton.onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootHigh), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
+    //shootLowButton.onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootLow), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
+    m_controller2.axisGreaterThan(2 , 0.7)
+    .onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootHigh), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake)))
     .onFalse(Commands.parallel(new InstantCommand(m_Belt::off), new InstantCommand(m_Shooter::off)));
-    m_controller2.axisGreaterThan(Constants.SHOOT_LOW, 0.7).onTrue(new InstantCommand(m_Shooter::shootLow)).onFalse(new InstantCommand(m_Shooter::off));
-    m_controller2.axisGreaterThan(Constants.INTAKE, 0.7).onTrue(new InstantCommand(m_intake::intake)).onFalse(new InstantCommand(m_intake::off));
-    reverseIntakeButton.onTrue(new InstantCommand(m_intake::reverse)).onFalse(new InstantCommand(m_intake::off));
+    m_controller2.axisGreaterThan(3, 0.7).onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootLow), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
+    intakeButton.whileTrue(new RunCommand(m_intake::intake, m_intake)).onFalse(new InstantCommand(m_intake::off));
+    reverseIntakeButton.whileTrue(new RunCommand(m_intake::reverse, m_intake)).onFalse(new InstantCommand(m_intake::off));
     //groundIntakeButton.onTrue(new InstantCommand(m_))
     //shootHighButton.onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootHigh), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
     //endregion
@@ -143,9 +112,11 @@ public class RobotContainer {
 
 
     //region Basic Testing Methods
-
-    groundIntakeButton.onTrue(Commands.sequence(new InstantCommand(m_pivot::pivotDown), new InstantCommand(m_pivot::IntakeOn)))
-    .onFalse(new InstantCommand(m_pivot::off));
+    
+    groundIntakeButton.onTrue(Commands.sequence(new InstantCommand(m_pivot::pivotDown), new InstantCommand(m_pivot::IntakeOn))).onFalse(new InstantCommand(m_pivot::off));
+    groundIntakeUpButton.onTrue(Commands.sequence(new InstantCommand(m_pivot::pivotUp), new InstantCommand(m_pivot:: IntakeOn))).onFalse(new InstantCommand(m_pivot::off));
+    
+    // shootButton.whileTrue(new InstantCommand(m_Belt::runBelt));
     //endregion  
   }
 

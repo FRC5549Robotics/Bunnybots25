@@ -1,45 +1,21 @@
 package frc.robot.subsystems;
 
-import java.io.Console;
-
-import org.opencv.core.Mat;
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VoltageOut;
-
 import frc.robot.Constants;
 
 public class SwerveModule extends SubsystemBase {
@@ -237,20 +213,38 @@ public class SwerveModule extends SubsystemBase {
             delta -= Math.signum(delta) * 180;
         }
 
-        adjustedAngle = Rotation2d.fromDegrees(delta + curAngle.getDegrees());
-        double targetRotations = adjustedAngle.getRotations();
-        PositionVoltage positionRequest = new PositionVoltage(targetRotations);
+        // 1. Get current cumulative position from the turning motor (in Rotations)
+        double curMotorRotations = m_turningController.getPosition().getValueAsDouble();
+
+        // The angle change ('delta') is in degrees. Convert it to motor rotations.
+        // Change in Motor Rotations = (Degrees / 360) * Gear Ratio
+        double deltaMotorRotations = (delta / 360.0) * Constants.kTurningGearRatio;
+
+        // The new target position is the current cumulative position PLUS the required change
+        double targetMotorRotations = curMotorRotations + deltaMotorRotations;
+        
+        PositionVoltage positionRequest = new PositionVoltage(targetMotorRotations);
         
 
-        if((driveOutput == 0 && Math.abs(getTurnCANcoder().getPosition().getValueAsDouble() - adjustedAngle.getDegrees()) > 2) || Math.abs(driveOutput) > 0){
-            // m_turningController.getClosedLoopController().setReference(
-            //     adjustedAngle.getDegrees(),
-            //     ControlType.kPosition
-            // );     
-            m_turningController.setControl(positionRequest);       
+        // if((driveOutput == 0 && Math.abs(getTurnCANcoder().getPosition().getValueAsDouble() - adjustedAngle.getDegrees()) > 2) || Math.abs(driveOutput) > 0){
+        //     // m_turningController.getClosedLoopController().setReference(
+        //     //     adjustedAngle.getDegrees(),
+        //     //     ControlType.kPosition
+        //     // );     
+        //     m_turningController.setControl(positionRequest);       
+        // }
+        // else{
+        //     m_turningController.set(0);
+        // }
+
+        // You generally only set the position control if the drive output is non-zero,
+        // or if the module is currently far from the target angle and you want it to snap.
+        // Simplified: Always set the position if the drive is active or the delta is large.
+        if (Math.abs(driveOutput) > 0.01 || Math.abs(delta) > 0.5) { // Use the pre-calculated 'delta'
+            m_turningController.setControl(positionRequest);      
         }
         else{
-            m_turningController.set(0);
+            m_turningController.set(0); // Holds the last position
         }
 
         SmartDashboard.putNumber("Commanded Velocity", driveOutput);

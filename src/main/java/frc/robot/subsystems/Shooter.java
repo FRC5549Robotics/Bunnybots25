@@ -1,31 +1,32 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase{
-    SparkMax OuttakeMotorLeft;
-    SparkMax OuttakeMotorRight;
-    SparkMaxConfig OuttakeMotorLeftConfig;
-    SparkMaxConfig OuttakeMotorRightConfig;
-    public Shooter(){
-        OuttakeMotorLeft = new SparkMax(Constants.OUTTAKE_MOTOR_LEFT, MotorType.kBrushless);
-        OuttakeMotorLeftConfig = new SparkMaxConfig();
-        OuttakeMotorLeftConfig.idleMode(IdleMode.kBrake);
-        OuttakeMotorLeft.configure(OuttakeMotorLeftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-        OuttakeMotorRight = new SparkMax(Constants.OUTTAKE_MOTOR_RIGHT, MotorType.kBrushless);
-        OuttakeMotorRightConfig = new SparkMaxConfig();
-        OuttakeMotorRightConfig.idleMode(IdleMode.kBrake);
-        OuttakeMotorRight.configure(OuttakeMotorRightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    }
+    TalonFX OuttakeMotorLeft;
+    TalonFX OuttakeMotorRight;
+    TalonFXConfiguration OuttakeMotorLeftConfig;
+    TalonFXConfiguration OuttakeMotorRightConfig;
 
+    
+    public Shooter(){
+        OuttakeMotorLeft = new TalonFX(Constants.OUTTAKE_MOTOR_LEFT);
+        OuttakeMotorLeftConfig = new TalonFXConfiguration();
+        OuttakeMotorLeftConfig.CurrentLimits.StatorCurrentLimit = 60;
+        OuttakeMotorLeftConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        OuttakeMotorLeftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        OuttakeMotorRight = new TalonFX(Constants.OUTTAKE_MOTOR_RIGHT);
+        OuttakeMotorRightConfig = new TalonFXConfiguration();
+        OuttakeMotorRightConfig.CurrentLimits.StatorCurrentLimit = 60;
+        OuttakeMotorRightConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        OuttakeMotorRightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    }
 
     public void shootHigh(){
         OuttakeMotorLeft.set(Constants.OUTTAKE_MOTOR_LEFT_SPEED_HIGH);

@@ -44,6 +44,7 @@ public class DriveCommand extends Command {
         List<Double> speeds = DrivetrainSubsystem.generateSpeeds(bool_values, controllerVals);
         xDot = speeds.get(0);
         yDot = speeds.get(1);
+        System.out.println("speeds are being get " + speeds.get(0));
         // thetaDot = m_Limelight.turnToTarget();
 
         // double[] dots = m_controller.rightBumper().getAsBoolean() ? m_Limelight.turnToTarget(true) : m_Limelight.turnToTarget(false);

@@ -44,7 +44,7 @@ public class RobotContainer {
   JoystickButton groundIntakeButton = new JoystickButton(m_controller2.getHID(), 1);
   JoystickButton reverseIntakeButton = new JoystickButton(m_controller2.getHID(), 3);
   JoystickButton groundIntakeUpButton = new JoystickButton(m_controller2.getHID(), 4);
-  JoystickButton shootButton = new JoystickButton(m_controller2.getHID(), 8);
+  // JoystickButton shootButton = new JoystickButton(m_controller2.getHID(), 8);
 
 
 
@@ -57,7 +57,7 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Shooter m_Shooter = new Shooter();
   private final Belt m_Belt = new Belt();
-  private final GroundIntake m_pivot = new GroundIntake(m_controller2);
+  private final GroundIntake m_pivot = new GroundIntake();
   //endregion
 
   //AUTOCHOOSER SET UP
@@ -99,7 +99,7 @@ public class RobotContainer {
     //shootLowButton.onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootLow), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
     m_controller2.axisGreaterThan(2 , 0.7)
     .onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootHigh), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake)))
-    .onFalse(Commands.parallel(new InstantCommand(m_Belt::off), new InstantCommand(m_Shooter::off)));
+    .onFalse(Commands.parallel(new InstantCommand(m_Belt::off), new InstantCommand(m_Shooter::off), new InstantCommand(m_intake::off)));
     m_controller2.axisGreaterThan(3, 0.7).onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootLow), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
     intakeButton.whileTrue(new RunCommand(m_intake::intake, m_intake)).onFalse(new InstantCommand(m_intake::off));
     reverseIntakeButton.whileTrue(new RunCommand(m_intake::reverse, m_intake)).onFalse(new InstantCommand(m_intake::off));
@@ -107,14 +107,17 @@ public class RobotContainer {
     //shootHighButton.onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootHigh), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
     //endregion
 
-    
+    groundIntakeButton.onTrue(new InstantCommand(m_pivot::pivotDown)).whileTrue(new RunCommand(m_pivot::IntakeOn, m_pivot)).onFalse(new InstantCommand(m_pivot::IntakeOff)); 
+
+// "Up" Intake Button
+    groundIntakeUpButton.onTrue(new InstantCommand(m_pivot::pivotUp)).whileTrue(new RunCommand(m_pivot::IntakeOn, m_pivot)).onFalse(new InstantCommand(m_pivot::IntakeOff));
 
 
 
     //region Basic Testing Methods
-    
-    groundIntakeButton.onTrue(Commands.sequence(new InstantCommand(m_pivot::pivotDown), new InstantCommand(m_pivot::IntakeOn))).onFalse(new InstantCommand(m_pivot::off));
-    groundIntakeUpButton.onTrue(Commands.sequence(new InstantCommand(m_pivot::pivotUp), new InstantCommand(m_pivot:: IntakeOn))).onFalse(new InstantCommand(m_pivot::off));
+ 
+    // groundIntakeButton.onTrue(Commands.sequence(new InstantCommand(m_pivot::pivotDown), new InstantCommand(m_pivot::IntakeOn))).onFalse(new InstantCommand(m_pivot::off));
+    // groundIntakeUpButton.onTrue(Commands.sequence(new InstantCommand(m_pivot::pivotUp), new InstantCommand(m_pivot:: IntakeOn))).onFalse(new InstantCommand(m_pivot::off));
     
     // shootButton.whileTrue(new InstantCommand(m_Belt::runBelt));
     //endregion  

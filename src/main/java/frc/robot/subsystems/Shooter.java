@@ -26,6 +26,9 @@ public class Shooter extends SubsystemBase{
         OuttakeMotorRightConfig.CurrentLimits.StatorCurrentLimit = 60;
         OuttakeMotorRightConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         OuttakeMotorRightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        OuttakeMotorRight.getConfigurator().apply(OuttakeMotorRightConfig);
+        OuttakeMotorLeft.getConfigurator().apply(OuttakeMotorLeftConfig);
     }
 
     public void shootHigh(){

@@ -23,7 +23,7 @@ public class Belt extends SubsystemBase {
 
     /** Runs the belt motor at 50% power (forward) */
     public void runBelt() {
-        BeltMotor.set(0.6);  // Change 0.5 to any value from -1.0 to 1.0 as needed
+        BeltMotor.set(-0.6);  // Change 0.5 to any value from -1.0 to 1.0 as needed
         System.out.println("Hello? Is it me you're looking forrrrrr");
     }
 

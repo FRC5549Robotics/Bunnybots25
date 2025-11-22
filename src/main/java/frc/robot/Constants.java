@@ -187,10 +187,10 @@ public final class Constants {
     //Outtake Constants
     public static final int OUTTAKE_MOTOR_LEFT = 13;
     public static final int OUTTAKE_MOTOR_RIGHT = 14;
-    public static final int OUTTAKE_MOTOR_LEFT_SPEED_HIGH = 1;
-    public static final int OUTTAKE_MOTOR_RIGHT_SPEED_HIGH = 1;
-    public static final int OUTTAKE_MOTOR_RIGHT_SPEED_LOW = 1;
-    public static final int OUTTAKE_MOTOR_LEFT_SPEED_LOW = 0;
+    public static final double OUTTAKE_MOTOR_LEFT_SPEED_HIGH = -.1;
+    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_HIGH = .1;
+    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_LOW = .1;
+    public static final double OUTTAKE_MOTOR_LEFT_SPEED_LOW = -.1;
     public static final double SHOOT_HIGH = .6;
     public static final double SHOOT_LOW = .6;
 
@@ -208,8 +208,12 @@ public final class Constants {
     public static final int BELT_MOTOR_ID = 18;
 
   //GroundIntake Constants
-    public static final int PIVOT_MOTOR_ID = 16;
+    public static final int PIVOT_MOTOR_ID = 15;
+    public static final double PIVOT_DOWN_POSITION = -3.35;
+    public static final double PIVOT_UP_POSITION = 0;
     public static final int GROUND_INTAKE_ID = 19;
-    public static final double GROUND_PIVOT_SPEED = 0.5;
+    public static final double GROUND_PIVOT_SPEED = 0.15;
 
-}
+    //CanRange
+    public static final int CANRANGE_ID = 20;
+} 

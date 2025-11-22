@@ -216,4 +216,7 @@ public final class Constants {
 
     //CanRange
     public static final int CANRANGE_ID = 20;
+
+    //CANdle
+    public static final int CANDLE_ID = 19;
 } 

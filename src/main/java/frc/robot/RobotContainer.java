@@ -22,9 +22,9 @@ import frc.robot.subsystems.Belt;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.GroundIntake;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -58,6 +58,7 @@ public class RobotContainer {
   private final Shooter m_Shooter = new Shooter();
   private final Belt m_Belt = new Belt();
   private final GroundIntake m_pivot = new GroundIntake();
+  private final LEDSubsystem m_leds = new LEDSubsystem();
   //endregion
 
   //AUTOCHOOSER SET UP
@@ -73,6 +74,7 @@ public class RobotContainer {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    m_leds.setIdleRainbow();
   }
 
   /**
@@ -107,10 +109,10 @@ public class RobotContainer {
     //shootHighButton.onTrue(Commands.parallel(new InstantCommand(m_Shooter::shootHigh), new InstantCommand(m_Belt::runBelt), new InstantCommand(m_intake::intake))).onFalse(Commands.parallel(new InstantCommand(m_Shooter::off), new InstantCommand(m_Belt::off), new InstantCommand(m_intake::off)));
     //endregion
 
-    groundIntakeButton.onTrue(new InstantCommand(m_pivot::pivotDown)).whileTrue(new RunCommand(m_pivot::IntakeOn, m_pivot)).onFalse(new InstantCommand(m_pivot::IntakeOff)); 
+    groundIntakeButton.whileTrue(new RunCommand(m_pivot::pivotDown, m_pivot)).whileTrue(new RunCommand(m_pivot::IntakeOn, m_pivot)).whileTrue(new RunCommand(m_leds:: setIntaking, m_leds)).onFalse(Commands.parallel(new InstantCommand(m_pivot::IntakeOff), new InstantCommand(m_leds::setIdleRainbow))); 
 
 // "Up" Intake Button
-    groundIntakeUpButton.onTrue(new InstantCommand(m_pivot::pivotUp)).whileTrue(new RunCommand(m_pivot::IntakeOn, m_pivot)).onFalse(new InstantCommand(m_pivot::IntakeOff));
+    groundIntakeUpButton.whileTrue(new RunCommand(m_pivot::pivotUp, m_pivot)).whileTrue(new RunCommand(m_pivot::IntakeOn, m_pivot)).onFalse(new InstantCommand(m_pivot::IntakeOff));
 
 
 

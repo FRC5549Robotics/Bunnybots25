@@ -57,24 +57,26 @@ public class GroundIntake extends SubsystemBase{
     }
 
     public void pivotDown(){
-        for(double i = pivotMotor.getPosition().getValueAsDouble();  i < Constants.PIVOT_DOWN_POSITION+.5; ){
+        // for(double i = pivotMotor.getPosition().getValueAsDouble();  i < Constants.PIVOT_DOWN_POSITION+.5; ){
         if(pivotMotor.getPosition().getValueAsDouble() < Constants.PIVOT_DOWN_POSITION){
         pivotMotor.set(Constants.GROUND_PIVOT_SPEED);
         
         }
-        i = pivotMotor.getPosition().getValueAsDouble();
+        // i = pivotMotor.getPosition().getValueAsDouble();
         
-    }
+    // }
     double position = pivotMotor.getPosition().getValueAsDouble();
     SmartDashboard.putNumber("Pivot Motor Rotation", position); 
         
     }
 
     public void pivotUp(){
-        // if(pivotMotor.getPosition().getValueAsDouble() > Constants.PIVOT_UP_POSITION){
+
         System.out.println("pivotup isbeing claled");
-        pivotMotor.set(-0.1);
-        // }
+        if(pivotMotor.getPosition().getValueAsDouble() > Constants.PIVOT_UP_POSITION){
+        pivotMotor.set(-0.2);
+
+        }
 
     }
     public void IntakeOn(){

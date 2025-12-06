@@ -2,9 +2,12 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Optional;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 
 import choreo.trajectory.SwerveSample;
@@ -23,20 +26,8 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-//import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.PathPlannerLogging;
-
 import frc.robot.Constants;
 
 
@@ -51,7 +42,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Constants.FRONT_LEFT_MODULE_STEER_MOTOR,
           Constants.FRONT_LEFT_MODULE_STEER_ENCODER,
           Constants.FRONT_LEFT_MAGNET_OFFSET,
-          Constants.kDriveCANBus
+          Constants.kDriveCANBus,
+          false
           );
 
   private final SwerveModule m_frontRight =
@@ -60,7 +52,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Constants.FRONT_RIGHT_MODULE_STEER_MOTOR,
           Constants.FRONT_RIGHT_MODULE_STEER_ENCODER,
           Constants.FRONT_RIGHT_MAGNET_OFFSET,
-          Constants.kDriveCANBus
+          Constants.kDriveCANBus,
+          false
           );
 
   private final SwerveModule m_rearLeft =
@@ -69,7 +62,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Constants.BACK_LEFT_MODULE_STEER_MOTOR,
         Constants.BACK_LEFT_MODULE_STEER_ENCODER,
         Constants.BACK_LEFT_MAGNET_OFFSET,
-        Constants.kDriveCANBus
+        Constants.kDriveCANBus,
+        true
           );
 
   private final SwerveModule m_rearRight =
@@ -78,7 +72,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Constants.BACK_RIGHT_MODULE_STEER_MOTOR,
         Constants.BACK_RIGHT_MODULE_STEER_ENCODER,
         Constants.BACK_RIGHT_MAGNET_OFFSET,
-        Constants.kDriveCANBus
+        Constants.kDriveCANBus,
+        false
           );
 
   private SwerveModule[] modules = {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
@@ -136,39 +131,39 @@ public class DrivetrainSubsystem extends SubsystemBase {
     timer.start();
     lastTime = 0;
 
-    //PATHPLANNER CONFIG
+      //PATHPLANNER CONFIG
 
-    try{
-      config = RobotConfig.fromGUISettings();
-    } catch (Exception e){
-      e.printStackTrace();
-    }  
-
-    AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(0.05, 0.0, 2.0), // Translation PID constants
-                    new PIDConstants(1.0, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration                           cs
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-    );
-
-  }
+      try{
+        config = RobotConfig.fromGUISettings();
+      } catch (Exception e){
+        e.printStackTrace();
+      }  
+  
+      AutoBuilder.configure(
+              this::getPose, // Robot pose supplier
+              this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+              this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+              (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+              new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                      new PIDConstants(0.01, 0.0, 0.9), // Translation PID constants
+                      new PIDConstants(1, 0.0, 0.05) // Rotation PID constants
+              ),
+              config, // The robot configuration                           cs
+              () -> {
+                // Boolean supplier that controls when the path will be mirrored for the red alliance
+                // This will flip the path being followed to the red side of the field.
+                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+  
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                  return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+              },
+              this // Reference to this subsystem to set requirements
+      );
+  
+    }
 
   public void syncEncoders() {
     // for (SwerveModule module: modules) {
@@ -205,10 +200,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Front Right Neo Velocity", m_frontRight.getDriveEncoder().getVelocity());
     // SmartDashboard.putNumber("Back Left Neo Velocity", m_rearLeft.getDriveEncoder().getVelocity());
     // SmartDashboard.putNumber("Back Right Neo Velocity", m_rearRight.getDriveEncoder().getVelocity());
-    SmartDashboard.putNumber("Front Left Talon Vel (RPS)", m_frontLeft.getDriveMotor().getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Front Right Talon Vel (RPS)", m_frontRight.getDriveMotor().getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Back Left Talon Vel (RPS)", m_rearLeft.getDriveMotor().getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Back Right Talon Vel (RPS)", m_rearRight.getDriveMotor().getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Front Left Talon Vel (RPS)", m_frontLeft.getDriveMotor().getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Front Right Talon Vel (RPS)", m_frontRight.getDriveMotor().getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Back Left Talon Vel (RPS)", m_rearLeft.getDriveMotor().getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Back Right Talon Vel (RPS)", m_rearRight.getDriveMotor().getVelocity().getValueAsDouble());
 
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     
@@ -354,7 +349,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       return;
     }
 
-    SwerveModuleState[] swerveModuleStates =
+    SwerveModuleState[] swerveModuleStates =        
         Constants.kDriveKinematics.toSwerveModuleStates(speeds);
            
     normalizeDrive(swerveModuleStates, speeds);
@@ -405,14 +400,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
   }
 
-  public void setOpenLoopStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, Preferences.getDouble("kMaxSpeedMetersPerSecond", Constants.kMaxSpeedMetersPerSecond));
+//   public void setOpenLoopStates(SwerveModuleState[] desiredStates) {
+//     SwerveDriveKinematics.desaturateWheelSpeeds(
+//         desiredStates, Preferences.getDouble("kMaxSpeedMetersPerSecond", Constants.kMaxSpeedMetersPerSecond));
 
-    for (int i = 0; i <= 3; i++) {
-      modules[i].setOpenLoopState(desiredStates[i]);
-    }
-  }
+//     for (int i = 0; i <= 3; i++) {
+//       modules[i].setOpenLoopState(desiredStates[i]);
+//     }
+//   }
 
   public SwerveModuleState[] getModuleStates() {
 

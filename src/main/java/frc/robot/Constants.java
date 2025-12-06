@@ -29,22 +29,26 @@ public final class Constants {
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 2; 
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 1;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 9; 
-  public static final double FRONT_LEFT_MAGNET_OFFSET = -0.002197; 
+  public static final double FRONT_LEFT_MAGNET_OFFSET = 0.109619;
+  // -0.002197; 
 
   public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 4;  
   public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 3;
   public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 10; 
-  public static final double FRONT_RIGHT_MAGNET_OFFSET = -0.547852; 
+  public static final double FRONT_RIGHT_MAGNET_OFFSET = 0.222412;
+  // -0.547852; 
 
   public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 8; 
   public static final int BACK_LEFT_MODULE_STEER_MOTOR = 7; 
   public static final int BACK_LEFT_MODULE_STEER_ENCODER = 12; 
-  public static final double BACK_LEFT_MAGNET_OFFSET = -0.314209; 
+  public static final double BACK_LEFT_MAGNET_OFFSET = 0.247559;
+  // -0.314209; 
 
   public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6; 
   public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5; 
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 11; 
-  public static final double BACK_RIGHT_MAGNET_OFFSET = -0.610840;  
+  public static final double BACK_RIGHT_MAGNET_OFFSET = 0.149658;
+  // -0.610840;  
 
   // Define the conventional order of our modules when putting them into arrays
   public static final int FRONT_LEFT =0;
@@ -66,14 +70,14 @@ public final class Constants {
 
   // The drive encoder reports in RPM by default. Calculate the conversion factor
   // to make it report in meters per second.
-  public static final double kDriveGearRatio = 8.143;
+  public static final double kDriveGearRatio = 6.03;
   public static final double kDriveConversionFactor = (kWheelDiameterMeters * Math.PI) / kDriveGearRatio;
 
   public static final double kTurningGearRatio = 287/11;
 
   public static final double kTurnPositionConversionFactor = 12.8;
 
-  public static final double kMaxSpeedMetersPerSecond = 4;
+  public static final double kMaxSpeedMetersPerSecond = 5;
   // Units are meters.
   // Distance between centers of right and left wheels on robot
   public static final double kTrackWidth = 0.51435;
@@ -106,13 +110,13 @@ public final class Constants {
       
   public static final boolean kGyroReversed = false;
 
-  public static final double kDriveP = 0.000000000000001; //Usually 0.05, 0.000000000000001?
+  public static final double kDriveP = 0.01; //Usually 0.05, 0.000000000000001?
   public static final double kDriveI = 0.0;
   public static final double kDriveD = 0.9; //Usually 0.0, 0.9;?
   public static final double kDriveFF = 0.1;
   public static final double SLEW_RATE_LIMITER = 3;
 
-  public static final double kTurningP = 0.005; //Usually 0.05
+  public static final double kTurningP = 1; //Usually 0.05
   public static final double kTurningI = 0.0;
   public static final double kTurningD = 0.05;
   public static final double kAcceleration = 4;
@@ -133,40 +137,6 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
-
-  //Elevator Constants
-    // public static final int ELEVATOR_LEFT_MOTOR = 30;
-    // public static final int ELEVATOR_RIGHT_MOTOR = 31;
-    // public static final int ELEVATOR_JOYSTICK = 1;
-    // public static final double ELEVATOR_DEADBAND = 0.05;
-    // public static final double ELEVATOR_SCALING_FACTOR = -0.2;
-    // public static final int ELEVATOR_ENCODER = 8;
-    // public static final double ELEVATOR_OFFSET = 0.331;  
-
-    // public static final double ELEVATOR_LEFT_INTAKE_SETPOINT = 13.212891;
-    // public static final double ELEVATOR_LEFT_STOWED_SETPOINT = 0.385254;
-    // public static final double ELEVATOR_LEFT_L1_SETPOINT = 10.768750; 
-    // public static final double ELEVATOR_LEFT_L2_SETPOINT = 22.015137;
-    // public static final double ELEVATOR_LEFT_L3_SETPOINT = 40.010254; //previously 39.010254
-    // // public static final double ELEVATOR_LEFT_L4_SETPOINT = 0;
-    // public static final double ELEVATOR_LEFT_ALGAE_LOW_SETPOINT = 25.516602; 
-    // public static final double ELEVATOR_LEFT_ALGAE_HIGH_SETPOINT = 46.582520;
-    // public static final double ELEVATOR_LEFT_PROCESSOR_SETPOINT = 0.285254;
-
-    // public static final double ELEVATOR_RIGHT_INTAKE_SETPOINT = -13.25820;
-    // public static final double ELEVATOR_RIGHT_STOWED_SETPOINT = -0.442383;
-    // public static final double ELEVATOR_RIGHT_L1_SETPOINT = -9.911133;
-    // public static final double ELEVATOR_RIGHT_L2_SETPOINT = -24.961563;
-    // public static final double ELEVATOR_RIGHT_L3_SETPOINT = -42.04;
-    
-    // // public static final double ELEVATOR_RIGHT_L4_SETPOINT = 0;
-    // public static final double ELEVATOR_RIGHT_ALGAE_LOW_SETPOINT = -25.616211;  
-    // public static final double ELEVATOR_RIGHT_ALGAE_HIGH_SETPOINT = -46.680176;
-    // public static final double ELEVATOR_RIGHT_PROCESSOR_SETPOINT = -0.442383;
-
-    // public static final double ELEVATOR_RESET_CURRENT = 3;
-    // public static final int RESET_ENCODER_BUTTON = 7;
-  
     
 
   //Shintake Constants
@@ -181,17 +151,18 @@ public final class Constants {
 
     //Intake Constants
     public static final int INTAKE_MOTOR = 17;
-    public static final double INTAKE_SPEED = .6;
+    public static final double INTAKE_SPEED = .65;
     public static final int INTAKE = 0;
 
-    //Outtake Constants
+    //Shooter Constants
     public static final int OUTTAKE_MOTOR_LEFT = 13;
     public static final int OUTTAKE_MOTOR_RIGHT = 14;
-    public static final double OUTTAKE_MOTOR_LEFT_SPEED_HIGH = -.1;
-    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_HIGH = .1;
-    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_LOW = .1;
-    public static final double OUTTAKE_MOTOR_LEFT_SPEED_LOW = -.1;
+    public static final double OUTTAKE_MOTOR_LEFT_SPEED_HIGH = -.232;
+    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_HIGH = .248;
+    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_LOW = .17;
+    public static final double OUTTAKE_MOTOR_LEFT_SPEED_LOW = -.17;
     public static final double SHOOT_HIGH = .6;
+
     public static final double SHOOT_LOW = .6;
 
 
@@ -209,7 +180,7 @@ public final class Constants {
 
   //GroundIntake Constants
     public static final int PIVOT_MOTOR_ID = 15;
-    public static final double PIVOT_DOWN_POSITION = -3.35;
+    public static final double PIVOT_DOWN_POSITION = 11;
     public static final double PIVOT_UP_POSITION = 0;
     public static final int GROUND_INTAKE_ID = 19;
     public static final double GROUND_PIVOT_SPEED = 0.15;

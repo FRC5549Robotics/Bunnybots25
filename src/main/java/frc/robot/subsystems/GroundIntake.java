@@ -58,11 +58,29 @@ public class GroundIntake extends SubsystemBase{
 
     public void pivotDown(){
         // for(double i = pivotMotor.getPosition().getValueAsDouble();  i < Constants.PIVOT_DOWN_POSITION+.5; ){
+        
         if(pivotMotor.getPosition().getValueAsDouble() < Constants.PIVOT_DOWN_POSITION){
         pivotMotor.set(Constants.GROUND_PIVOT_SPEED);
         
         }
+        else{
+            pivotMotor.set(0);
+        if (canRange.getIsDetected().getValue() == true) 
+    {
+        if(pivotMotor.getPosition().getValueAsDouble() <= Constants.PIVOT_UP_POSITION){
+            IntakeMotor.set(-.3);
+        }
+        else{
+        // Stop the motor if we have a note OR the pivot is too low
+        IntakeMotor.set(0);
+        }
+    } else {
+        // Run the motor only if it's safe AND we don't have a note
+        IntakeMotor.set(-.3);
+    }
+}
         // i = pivotMotor.getPosition().getValueAsDouble();
+        System.out.println("is pivot being called");
         
     // }
     double position = pivotMotor.getPosition().getValueAsDouble();
@@ -71,19 +89,18 @@ public class GroundIntake extends SubsystemBase{
     }
 
     public void pivotUp(){
-
+        double position = pivotMotor.getPosition().getValueAsDouble();
+        SmartDashboard.putNumber("Pivot Motor Rotation", position); 
         System.out.println("pivotup isbeing claled");
         if(pivotMotor.getPosition().getValueAsDouble() > Constants.PIVOT_UP_POSITION){
         pivotMotor.set(-0.2);
 
         }
-
-    }
-    public void IntakeOn(){
         if (canRange.getIsDetected().getValue() == true) 
     {
-        if(pivotMotor.getPosition().getValueAsDouble() <= -1){
-            IntakeMotor.set(.3);
+        if(pivotMotor.getPosition().getValueAsDouble() <= Constants.PIVOT_UP_POSITION){
+            IntakeMotor.set(-.3);
+            pivotMotor.set(0);
         }
         else{
         // Stop the motor if we have a note OR the pivot is too low
@@ -91,8 +108,29 @@ public class GroundIntake extends SubsystemBase{
         }
     } else {
         // Run the motor only if it's safe AND we don't have a note
-        IntakeMotor.set(.1);
+        IntakeMotor.set(-.3);
     }
+
+    }
+    public void IntakeOn(){
+        if (canRange.getIsDetected().getValue() == true) 
+    {
+        if(pivotMotor.getPosition().getValueAsDouble() <= Constants.PIVOT_UP_POSITION){
+            pivotMotor.set(0);
+            IntakeMotor.set(-.3);
+        }
+        else{
+        // Stop the motor if we have a note OR the pivot is too low
+        IntakeMotor.set(0);
+        }
+    } else {
+        // Run the motor only if it's safe AND we don't have a note
+        IntakeMotor.set(-.3);
+    }
+    }
+
+    public void IntakeReverse(){
+        IntakeMotor.set(.3);
     }
     public void IntakeOff(){
         IntakeMotor.set(0);
@@ -102,6 +140,34 @@ public class GroundIntake extends SubsystemBase{
         pivotMotor.set(0);
         IntakeMotor.set(0);
     }
+
+    // MOVES PIVOT DOWN WITHOUT RUNNING INTAKE
+public void pivotDownAuto() {
+    if(pivotMotor.getPosition().getValueAsDouble() < Constants.PIVOT_DOWN_POSITION){
+        pivotMotor.set(Constants.GROUND_PIVOT_SPEED);
+    } else {
+        pivotMotor.set(0);
+    }
+}
+
+// MOVES PIVOT UP WITHOUT RUNNING INTAKE
+public void pivotUpAuto() {
+    if(pivotMotor.getPosition().getValueAsDouble() > Constants.PIVOT_UP_POSITION){
+        pivotMotor.set(-0.2);
+    } else {
+        pivotMotor.set(0);
+    }
+}
+
+public boolean hasNote() {
+    // Returns TRUE if the sensor sees an object, FALSE otherwise
+    return canRange.getIsDetected().getValue();
+}
+
+// Add this to GroundIntake.java
+public double getPivotPosition() {
+    return pivotMotor.getPosition().getValueAsDouble();
+}
 
     public void periodic(){
     }

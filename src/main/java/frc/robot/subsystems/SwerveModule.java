@@ -46,7 +46,7 @@ public class SwerveModule extends SubsystemBase {
      * @param turningMotorChannel ID for the turning motor.
      */
 
-    public SwerveModule( int driveMotorChannel, int turningMotorChannel, int turningCANCoderChannel, double magnetOffset, CANBus canbus) {
+    public SwerveModule( int driveMotorChannel, int turningMotorChannel, int turningCANCoderChannel, double magnetOffset, CANBus canbus, boolean isInverted) {
         //Instantiate SwerveModule components
         m_driveController = new TalonFX(driveMotorChannel, canbus);
         m_turningController = new TalonFX(turningMotorChannel, canbus);

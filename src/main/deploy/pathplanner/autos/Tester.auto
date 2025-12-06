@@ -1,0 +1,44 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "nonchalant forward"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ComplexShot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "nonchalant slide backward"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "GroundIntakeCycle"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

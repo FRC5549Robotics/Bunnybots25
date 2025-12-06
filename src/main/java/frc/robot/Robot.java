@@ -139,15 +139,14 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     
-  //   // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-  //   System.out.println("Autonomous period started");
-  //   // schedule the autonomous command (example)
-  //   if (m_autonomousCommand != null) {
-  //     m_autonomousCommand.schedule();
-  //     System.out.println("Autonomous command initialized");
-  //   }
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    System.out.println("Autonomous period started");
+    // schedule the autonomous command (example)
+    m_autonomousCommand.schedule();
+    System.out.println("Autonomous command initialized");
+    }
 
-  }
+  
 
   /** This function is called periodically during autonomous. */
   @Override
@@ -162,6 +161,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+      
     // DataLogManager.start();
     // DriverStation.startDataLog(DataLogManager.getLog(), false);
     // m_belt.runBelt();

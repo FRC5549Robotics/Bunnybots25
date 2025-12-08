@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "nonchalant forward to base from init."
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "ComplexShot"
+            "name": "RunBelt"
           }
         }
       ]

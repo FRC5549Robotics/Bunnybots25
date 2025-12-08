@@ -59,7 +59,7 @@ public class SwerveModule extends SubsystemBase {
 
         // --- Drive Config ---
         m_driveConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-        m_driveConfig.CurrentLimits.withStatorCurrentLimit(40).withSupplyCurrentLimit(40);
+        m_driveConfig.CurrentLimits.withStatorCurrentLimit(30).withSupplyCurrentLimit(40);
 
         // --- Turning Config ---
         m_turningConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);

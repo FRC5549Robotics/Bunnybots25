@@ -99,15 +99,56 @@ public class RobotContainer {
 
             // PROCESS B: The Delays and other systems
             Commands.sequence(
-                new WaitCommand(1.0), // Wait 0.7 seconds while belt is running alone
-                
-                // Now start the Shooter and Intake together
-                Commands.parallel(
-                    Commands.startEnd(m_Belt::runBelt, m_Belt::off, m_Belt),
-                    Commands.startEnd(m_intake::intake, m_intake::off, m_intake)
-                ).withTimeout(3.0) // They run for 3 seconds then stop
-            )
+            // 1. UNJAM: Reverse intake briefly to pull note away from flywheels
+            Commands.startEnd(m_intake::reverse, m_intake::off, m_intake)
+                .withTimeout(0.4),
+
+            // 2. WAIT: Continue waiting for shooter spin-up
+            // We reduced this from 1.0 to 0.7 because the unjam took 0.3s
+            // (0.3s + 0.7s = 1.0s Total Prep Time)
+            new WaitCommand(0.4), 
+            
+            // 3. FIRE: Run Belt and Intake forward to feed the shooter
+            Commands.parallel(
+                Commands.startEnd(m_Belt::runBelt, m_Belt::off, m_Belt),
+                Commands.startEnd(m_intake::intake, m_intake::off, m_intake)
+            ).withTimeout(3.2))
         )
+    );
+
+    NamedCommands.registerCommand("QuickShot", 
+    Commands.parallel(
+        // PROCESS A: The Belt (Runs for the whole duration: 0.7 delay + 3.0 shoot)
+        // We use startEnd to ensure it turns OFF automatically when the timeout finishes
+        // Commands.startEnd(m_Belt::runBelt, m_Belt::off, m_Belt)
+        //     .withTimeout(4.0),
+        Commands.startEnd(m_Shooter::shootHigh, m_Shooter::off, m_Shooter)
+            .withTimeout(4),
+
+        // PROCESS B: The Delays and other systems
+        Commands.sequence(
+          Commands.startEnd(m_intake::reverse, m_intake::off, m_intake)
+            .withTimeout(0.4),
+
+      // 2. WAIT: Continue waiting for shooter spin-up
+      // We reduced this from 1.0 to 0.7 because the unjam took 0.3s
+      // (0.3s + 0.7s = 1.0s Total Prep Time)
+          new WaitCommand(0.5), 
+            
+            // Now start the Shooter and Intake together
+          // Commands.parallel(
+          //     Commands.startEnd(m_Belt::runBelt, m_Belt::off, m_Belt),
+          //     Commands.startEnd(m_intake::intake, m_intake::off, m_intake)
+          //   ).withTimeout(1.9), // They run for 3 seconds then stop
+
+          // Commands.startEnd(m_intake::reverse, m_intake::off, m_intake)
+          //   .withTimeout(0.3),
+          Commands.parallel(
+          Commands.startEnd(m_Belt::runBelt, m_Belt::off, m_Belt),
+          Commands.startEnd(m_intake::intake, m_intake::off, m_intake)
+          ).withTimeout(3.1) // They run for 3 seconds then stop
+        )
+    )
     );
 
     // 2. GROUND INTAKE CYCLE
@@ -143,9 +184,9 @@ public class RobotContainer {
 
         // 4. Pivot Up
         Commands.run(m_pivot::pivotUpAuto, m_pivot)
-             .until(() -> m_pivot.getPivotPosition() <= Constants.PIVOT_UP_POSITION + 0.5),
+             .until(() -> m_pivot.getPivotPosition() <= Constants.PIVOT_UP_POSITION),
 
-        Commands.run(m_pivot::IntakeReverse, m_pivot)
+        Commands.run(m_pivot::IntakeOn, m_pivot)
           .withTimeout(0.5)
     )
 );
@@ -223,7 +264,8 @@ public class RobotContainer {
     // return Commands.sequence(new WaitCommand(0.25), resetOdometry, myTrajectory);
     // return new HardcodedAuton(m_drive, m_pivot, m_elevator, m_shintake);
     System.out.println("getAutonomousCommand");
-    return new PathPlannerAuto("Tester");
-    
+    return new PathPlannerAuto("official chalant auto - red");
   }
+  
 };
+

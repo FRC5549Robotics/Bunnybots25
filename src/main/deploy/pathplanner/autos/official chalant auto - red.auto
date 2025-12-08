@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "nonchalant forward"
+            "pathName": "nonchalant forward to base from init."
           }
         },
         {
@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "nonchalant slide backward"
+                  "pathName": "nonchalant slide backward from base to 1st - red"
                 }
               },
               {
@@ -33,6 +33,24 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "chalant compensating slide forward from 1st to base"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "QuickShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "slide backward get out from zone from base"
           }
         }
       ]

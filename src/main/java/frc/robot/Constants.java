@@ -110,15 +110,15 @@ public final class Constants {
       
   public static final boolean kGyroReversed = false;
 
-  public static final double kDriveP = 0.01; //Usually 0.05, 0.000000000000001?
+  public static final double kDriveP = 0.004; //Usually 0.05, 0.000000000000001?
   public static final double kDriveI = 0.0;
-  public static final double kDriveD = 0.9; //Usually 0.0, 0.9;?
+  public static final double kDriveD = 1; //Usually 0.0, 0.9;?
   public static final double kDriveFF = 0.1;
   public static final double SLEW_RATE_LIMITER = 3;
 
-  public static final double kTurningP = 1; //Usually 0.05
+  public static final double kTurningP = 0.7; //Usually 0.05
   public static final double kTurningI = 0.0;
-  public static final double kTurningD = 0.05;
+  public static final double kTurningD = 0.06;
   public static final double kAcceleration = 4;
 
   public static final int RESET_NAVX_BUTTON = 8;
@@ -157,10 +157,12 @@ public final class Constants {
     //Shooter Constants
     public static final int OUTTAKE_MOTOR_LEFT = 13;
     public static final int OUTTAKE_MOTOR_RIGHT = 14;
-    public static final double OUTTAKE_MOTOR_LEFT_SPEED_HIGH = -.232;
-    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_HIGH = .248;
-    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_LOW = .17;
-    public static final double OUTTAKE_MOTOR_LEFT_SPEED_LOW = -.17;
+    public static final double OUTTAKE_MOTOR_LEFT_SPEED_HIGH = -.228;
+    // -.232
+    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_HIGH = .219; 
+    // .248
+    public static final double OUTTAKE_MOTOR_RIGHT_SPEED_LOW = .175;
+    public static final double OUTTAKE_MOTOR_LEFT_SPEED_LOW = -.18;
     public static final double SHOOT_HIGH = .6;
 
     public static final double SHOOT_LOW = .6;

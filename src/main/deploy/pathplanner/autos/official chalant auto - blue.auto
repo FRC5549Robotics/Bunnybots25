@@ -1,0 +1,62 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "nonchalant forward to base from init."
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ComplexShot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "slide backward to 1st - blue"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "GroundIntakeCycle"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "slide forward 1st to base - blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "QuickShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "slide backward get out from zone from base"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
